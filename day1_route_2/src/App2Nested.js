@@ -39,7 +39,7 @@ export default function NestingExample({ info }) {
     </Router>
   );
 }
- 
+
 function Home() {
   return (
     <div>
