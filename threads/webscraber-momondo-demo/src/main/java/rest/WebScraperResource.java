@@ -1,6 +1,10 @@
 package rest;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeoutException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.Produces;
@@ -20,6 +24,7 @@ import webscraper.TagDTO;
 public class WebScraperResource {
     @Context
     private UriInfo context;
+    private static ExecutorService es = Executors.newCachedThreadPool();
     
     @Path("sequental")
     @GET
@@ -33,8 +38,11 @@ public class WebScraperResource {
     @Path("parallel")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public String getTagsParrallel() {
-        return "[Make me return results, fetched by a parrallel strategy";
+    public String getTagsParrallel() throws InterruptedException, ExecutionException, TimeoutException {
+        long startTime = System.nanoTime();
+        List<TagDTO> dataFeched = Tester.runParrallel(es);
+        long endTime = System.nanoTime()-startTime;
+        return TagDTO.getTagDTOList("Parallel fetching",dataFeched, endTime);
     }
     
     

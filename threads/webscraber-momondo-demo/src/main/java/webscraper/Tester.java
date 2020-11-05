@@ -9,7 +9,18 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import jdk.jshell.spi.ExecutionControl;
+
+class TagHandler implements Callable<TagDTO> {
+  TagCounter tc;
+  TagHandler(TagCounter tc){
+    this.tc = tc;
+  }
+  @Override
+  public TagDTO call() throws Exception {
+    tc.doWork();
+    return new TagDTO(tc);
+  }
+}
 
 public class Tester {
 
@@ -25,8 +36,32 @@ public class Tester {
         return urls;
     }
 
-    public static List<TagCounter> runParrallel() throws ExecutionControl.NotImplementedException {
-        throw new ExecutionControl.NotImplementedException("Pleeeeease implement me!");
+    public static List<TagDTO> runParrallel(ExecutorService es) throws InterruptedException, ExecutionException, TimeoutException {
+        // ExecutorService es = Executors.newCachedThreadPool();
+        List<TagCounter> urls = new ArrayList();
+        urls.add(new TagCounter("https://www.fck.dk"));
+        urls.add(new TagCounter("https://www.google.com"));
+        urls.add(new TagCounter("https://politiken.dk"));
+        urls.add(new TagCounter("https://cphbusiness.dk"));
+        
+        List<TagDTO> tagDTOs = new ArrayList();
+        
+        List<Future<TagDTO>> futures = new ArrayList();
+        
+        // Start alle tråde (Callables)
+        for (TagCounter tc : urls) {
+          TagHandler th = new TagHandler(tc);
+          Future<TagDTO> tag = es.submit(th);
+          futures.add(tag);
+        }
+        
+        // Få resultater
+        List<TagDTO> results = new ArrayList<>();
+        for (Future<TagDTO> f : futures) {
+            // promise.then(res => //do something)
+            results.add(f.get(10, TimeUnit.SECONDS));
+        }
+        return results;
     }
 
     public static void main(String[] args) throws Exception {
@@ -45,14 +80,15 @@ public class Tester {
             System.out.println("----------------------------------");
         }
 
-        /*
-        
         start = System.nanoTime();
-        //TODO Add your parrallel calculation here     
+        //TODO Add your parrallel calculation here
+        ExecutorService es = Executors.newCachedThreadPool();
+        Tester.runParrallel(es);
         long timeParallel = System.nanoTime() - start;
         System.out.println("Time Parallel: " + ((timeParallel) / 1_000_000) + " ms.");
         System.out.println("Paralle was " + timeSequental / timeParallel + " times faster");
-       
-         */
+        es.shutdown();
+
+
     }
 }
