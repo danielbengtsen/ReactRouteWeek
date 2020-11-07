@@ -1,10 +1,11 @@
-import logo from './logo.svg';
 import './App.css';
+import JokeFetcher from './JokeFetcher';
+
 
 function App() {
-  return (
-    <div className="App">
-      
+  return(
+    <div>
+      <JokeFetcher />
     </div>
   );
 }
