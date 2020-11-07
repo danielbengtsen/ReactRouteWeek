@@ -18,7 +18,13 @@ public class ChuckDTO
 
     public ChuckDTO(String url, String id, String created_at, String value) 
     {
-        this.url = url;
+        if(url != null || url.isEmpty())
+        {
+            this.url = url;
+        } else
+        {
+            this.url = "https://api.chucknorris.io/jokes/random";
+        }
         this.id = id;
         this.created_at = created_at;
         this.value = value;

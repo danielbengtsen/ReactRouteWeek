@@ -14,7 +14,7 @@ import java.util.concurrent.TimeoutException;
 import utils.HttpUtils;
 
 public class JokeFetcher 
-{
+{   
     public static void main(String[] args) throws IOException 
     {
         String chuck = HttpUtils.fetchData("https://api.chucknorris.io/jokes/random");

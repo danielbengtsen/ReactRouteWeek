@@ -17,7 +17,13 @@ public class DadDTO
 
     public DadDTO(String url, String id, String joke) 
     {
-        this.url = url;
+        if(url != null || url.isEmpty())
+        {
+            this.url = url;
+        } else
+        {
+            this.url = "https://icanhazdadjoke.com";
+        }
         this.id = id;
         this.joke = joke;
     }

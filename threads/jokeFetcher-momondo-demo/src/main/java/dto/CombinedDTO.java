@@ -20,7 +20,7 @@ public class CombinedDTO
     {
         this.joke1 = chuck.getValue();
         this.joke1Reference = chuck.getUrl();
-        this.joke2 = dad.getUrl();
+        this.joke2 = dad.getJoke();
         this.joke2Reference = dad.getUrl();
     }
 
