@@ -35,6 +35,8 @@ public class User implements Serializable {
     @JoinColumn(name = "role_name", referencedColumnName = "role_name")})
   @ManyToMany
   private List<Role> roleList = new ArrayList<>();
+  
+  private static String salt = BCrypt.gensalt(7);
 
   public List<String> getRolesAsStrings() {
     if (roleList.isEmpty()) {
@@ -48,16 +50,15 @@ public class User implements Serializable {
   }
 
   public User() {}
-
-  //TODO Change when password is hashed
+  
    public boolean verifyPassword(String pw){
-        return(pw.equals(userPass));
+       return(BCrypt.checkpw(pw, userPass));
     }
 
   public User(String userName, String userPass) {
     this.userName = userName;
 
-    this.userPass = userPass;
+    this.userPass = BCrypt.hashpw(userPass, salt);
   }
 
 
